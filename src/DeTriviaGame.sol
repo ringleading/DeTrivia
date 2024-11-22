@@ -26,7 +26,7 @@ interface IDeTrivia {
         uint256 _questionId,
         string memory _answer,
         bytes32 _salt
-    ) external;
+    ) external returns (bool);
 }
 
 interface IRewardToken {
@@ -254,11 +254,9 @@ contract DeTriviaGame is Ownable, ReentrancyGuard {
         Game storage game = playerGames[msg.sender];
         uint256 currentQuestionId = game.questionIds[game.currentQuestionIndex];
 
-        DeTriviaContract.submitAnswer(currentQuestionId, _answer, _salt);
+        bool isCorrect = DeTriviaContract.submitAnswer(currentQuestionId, _answer, _salt);
 
-        // In production, implement proper answer verification
-        bool isCorrect = true;
-
+    
         if (isCorrect) {
             game.correctAnswers++;
             playerStats[msg.sender].totalCorrectAnswers++;
@@ -423,7 +421,7 @@ contract DeTriviaGame is Ownable, ReentrancyGuard {
             uint256 totalCorrectAnswers,
             uint256 totalTokensEarned,
             uint256 currentWeekScore,
-            bool canPlayToday
+            bool isPlayableToday
         )
     {
         PlayerStats storage stats = playerStats[player];

@@ -142,6 +142,7 @@ contract DeTrivia is Ownable, ReentrancyGuard, Pausable {
         questionExists(_questionId)
         notAttempted(_questionId)
         nonReentrant
+        returns (bool)
     {
         Question storage question = questions[_questionId];
 
@@ -159,6 +160,8 @@ contract DeTrivia is Ownable, ReentrancyGuard, Pausable {
             isCorrect,
             block.timestamp
         );
+
+        return isCorrect;
     }
 
     function deactivateQuestion(
